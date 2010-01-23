@@ -26,8 +26,13 @@
 
     <script type="application/x-javascript">
 
+      bucket = decodeURIComponent(window.location.search.slice(1));
+      document.title = "s3://" + bucket;
+      prefix = window.location.hash.slice(1);
+
       function browse(new_prefix) {
         prefix = new_prefix || '';
+        window.location.hash = prefix;
         fm.listKeys();
       }
 
@@ -35,8 +40,6 @@
         window.location.href = S3Ajax.signedURL(bucket, key);
       }
 
-
-      var bucket, prefix;
       var xslt = new XSLTProcessor();
 
       function deleteKey(node) {
@@ -48,7 +51,11 @@
 
       var fm = {
         init: function() {
-          document.title = window.location.href;
+          
+          // BACK BUTTON IS BROKEN
+          if (!chrome.extension) {
+            window.location.reload();
+          }
           
           $('.upload').click(function() {
             fm.upload();
@@ -72,10 +79,7 @@
           req.send(null);
 
           xslt.importStylesheet(req.responseXML);
-
-          bucket = decodeURIComponent(window.location.search.slice(1));
-          prefix = ''; 
-          $('#location').html("<a href='account.html'>s3</a>://<a href='#' onclick='browse(); return false'>"+bucket+"</a>/"+prefix)
+          $('#location').html("<a href='account.html'>s3</a>://<a href='#' onclick='browse(); return false'>"+bucket+"</a>")
           fm.listKeys();
         },
 
