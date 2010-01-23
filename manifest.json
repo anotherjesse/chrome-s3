@@ -1,0 +1,17 @@
+{
+  "name": "S3",
+  "version": "0.1",
+  "description": "Browse Amazon's S3 in Chrome",
+  "browser_action": {
+    "default_icon": "logo.png"
+  },
+  "background_page": "service.html",
+  "options_page": "options.html",
+  "permissions": [
+    "tabs",
+    "http://s3.amazonaws.com/",
+    "http://*.s3.amazonaws.com/",
+    "https://s3.amazonaws.com/",
+    "https://*.s3.amazonaws.com/"
+  ]
+}
