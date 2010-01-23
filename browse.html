@@ -28,7 +28,17 @@
 
       bucket = decodeURIComponent(window.location.search.slice(1));
       document.title = "s3://" + bucket;
-      prefix = window.location.hash.slice(1);
+      prefix = window.location.hash.slice(1) || '';
+      
+      function pollHash() {
+        if (prefix != (window.location.hash.slice(1))) {
+          prefix = window.location.hash.slice(1);
+          fm.listKeys();
+        }
+        setTimeout(pollHash, 100);
+      }
+
+      pollHash();
 
       function browse(new_prefix) {
         prefix = new_prefix || '';
@@ -84,14 +94,14 @@
         },
 
         listKeys: function() {
+          var keylist = $('#keylist')[0];
+          if (keylist) {
+            keylist.parentNode.removeChild(keylist);
+          }
           $('#active').addClass('busy')
           S3Ajax.listKeys(bucket,
             {prefix: prefix, delimiter: '/'},
             function (req) {
-              var keylist = $('#keylist')[0];
-              if (keylist) {
-                keylist.parentNode.removeChild(keylist);
-              }
               var fragment = xslt.transformToFragment(req.responseXML, document);
               $('#active')[0].appendChild(fragment);
 
